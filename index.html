@@ -1,0 +1,595 @@
+<!-- Homepage Custom Content -->
+<!-- 全域 JavaScript 變數與翻譯資源 -->
+<script>
+    // 定義比賽時間
+    var competitionData = {
+        startTime: "2025/4/19 8:00 (UTC+8)",
+        endTime: "2025/4/20 20:00 (UTC+8)"
+    };
+
+    // 定義比賽狀態是否開始的參數，0 表示未開始，1 表示已開始
+    var competitionStarted = 0;  // 將此值設為 1，即可切換狀態
+
+    // 自動檢查瀏覽器語言
+    var userLang = navigator.language || navigator.userLanguage || 'zh-TW';
+    if (!userLang.toLowerCase().includes("zh")) {
+        userLang = "en";
+    } else {
+        userLang = "zh-TW";
+    }
+
+    // 定義語系翻譯資源
+    var translations = {
+        "zh-TW": {
+            "heroTitle": "THJCC CTF",
+            "statusTitle": "競賽狀態",
+            "startTimeLabel": "開始時間",
+            "endTimeLabel": "結束時間",
+            "statusFieldLabel": "目前狀態",
+            "statusValue": "尚未開始",
+            "statusValueStarted": "正在進行中",
+            "rulesTitle": "競賽規則",
+            "partnersTitle": "合作單位",
+            "sponsors2Title": "贊助單位",
+            "rules": [
+                "請勿使用暴力破解或 DoS 等方式攻擊伺服器",
+                "競賽中禁止分享 Flag 或過程給其他參賽者",
+                "禁止破壞或嘗試破壞平台運作",
+                "如發現平台漏洞請立即回報給主辦方",
+                "違反規則的參賽者將被取消比賽資格",
+                "主辦方保留最終解釋權及處置權"
+            ]
+        },
+        "en": {
+            "heroTitle": "THJCC CTF",
+            "statusTitle": "Competition Status",
+            "startTimeLabel": "Start Time",
+            "endTimeLabel": "End Time",
+            "statusFieldLabel": "Status",
+            "statusValue": "Not Started",
+            "statusValueStarted": "In Progress",
+            "rulesTitle": "Rules",
+            "partnersTitle": "Official Partners",
+            "sponsors2Title": "Sponsors",
+            "rules": [
+                "Do not use brute force or DDoS attacks against the server",
+                "Sharing flags or solutions is prohibited",
+                "Do not damage or attempt to damage the platform",
+                "Report any platform vulnerabilities immediately to the organizers",
+                "Participants violating the rules will be disqualified",
+                "Organizers reserve the final interpretation and decision rights"
+            ]
+        }
+    };
+
+    // 當文件內容載入完成後，依據語言更新頁面內容
+    document.addEventListener("DOMContentLoaded", function () {
+        // 選擇對應翻譯，預設用 zh-TW
+        var lang = translations[userLang] ? userLang : "zh-TW";
+        var texts = translations[lang];
+
+        // 根據 competitionStarted 參數更新比賽狀態的文字
+        if (competitionStarted === 1) {
+            texts.statusValue = texts.statusValueStarted;
+        }
+
+        // 更新 Hero 區塊
+        document.querySelector('.hero-title').innerText = texts.heroTitle;
+
+        // 更新競賽狀態卡片
+        document.getElementById("status-title").innerText = texts.statusTitle;
+        document.getElementById("start-time-label").innerText = texts.startTimeLabel;
+        document.getElementById("end-time-label").innerText = texts.endTimeLabel;
+        document.getElementById("status-field-label").innerText = texts.statusFieldLabel;
+        document.getElementById("status-value").innerText = texts.statusValue;
+        // 更新比賽時間
+        document.getElementById("start-time").innerText = competitionData.startTime;
+        document.getElementById("end-time").innerText = competitionData.endTime;
+
+        // 更新競賽規則卡片
+        document.getElementById("rules-title").innerText = texts.rulesTitle;
+        var rulesList = document.getElementById("rules-list");
+        rulesList.innerHTML = "";  // 清空原有項目
+        texts.rules.forEach(function (rule) {
+            var li = document.createElement("li");
+            li.innerText = rule;
+            rulesList.appendChild(li);
+        });
+
+        // 更新「合作單位」標題
+        document.getElementById("partners-title").innerText = texts.partnersTitle;
+
+        // 更新「贊助商」標題
+        document.getElementById("sponsors-title").innerText = texts.sponsors2Title;
+    });
+</script>
+
+<!-- 自訂樣式表 -->
+<style>
+    .custom-homepage {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .hero-section {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .hero-logo {
+        max-width: 200px;
+        margin-bottom: 1rem;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, #FFD700, #FFA500);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+    }
+
+    .card-container {
+        display: grid;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .custom-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .custom-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .custom-card h2 {
+        color: #FFD700;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+
+    .status-grid {
+        display: grid;
+        /* 讓格子自動換行，最小寬度 200px，最大 1fr */
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .status-item {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        max-width: 100%;
+    }
+
+    .status-item-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .status-item-inner h3,
+    .status-item-inner p {
+        margin: 0;
+    }
+
+    .status-item-inner h3{
+        font-size: calc(1.3rem + .6vw)
+    }
+
+    .status-item h3 {
+        color: #FFA500;
+    }
+
+    .rules-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .rules-list li {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .rules-list li::before {
+        content: "•";
+        color: #FFD700;
+        position: absolute;
+        left: 0;
+        font-weight: bold;
+    }
+
+    /* ===== 合作單位 (partners) 區塊 ===== */
+    .partners-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 3rem;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .partner-item {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 15px;
+        padding: 2rem;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .partner-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .partner-item img {
+        max-width: 200px;
+        max-height: 100px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        filter: brightness(0.9);
+        transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .partner-item:hover img {
+        filter: brightness(1);
+        transform: scale(1.05);
+    }
+
+    /* ===== 贊助商 (sponsors) 區塊 ===== */
+    .sponsors-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 3rem;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .sponsor-item {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 2rem;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sponsor-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sponsor-item img {
+        max-width: 200px;
+        max-height: 120px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        filter: brightness(0.9);
+        transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .sponsor-item:hover img {
+        filter: brightness(1);
+        transform: scale(1.05);
+    }
+
+    /* RWD 調整 */
+    @media (max-width: 1200px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .custom-card {
+            padding: 1.5rem;
+            margin: 0 1rem;
+        }
+
+        .card-container {
+            gap: 1.5rem;
+        }
+
+        .partners-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .partner-item {
+            padding: 1.5rem;
+            height: 150px;
+        }
+
+        .partner-item img {
+            max-height: 80px;
+        }
+
+        .sponsors-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .sponsor-item {
+            padding: 1.5rem;
+            height: 150px;
+        }
+
+        .status-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    @media (max-width: 450px) {
+        .custom-card{
+            margin: 0;
+            padding: 1rem;
+        }
+        .custom-card>h2{
+            text-align: center;
+        }
+    }
+</style>
+
+<style>
+    /* 隱藏主題切換按鈕 */
+    .theme-switch {
+        display: none !important;
+    }
+    
+    :root {
+        /* --primary-color: #2196f3; */
+        --primary-color: #ffffffe7;
+        --secondary-color: #ff4081;
+        --background-dark: #1a1a1a;
+        --text-light: #ffffff;
+        --gray-dark: #343a40;
+    }
+    
+    body {
+        font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, var(--background-dark) 0%, #2d2d2d 100%);
+        color: var(--text-light);
+    }
+    
+    /* 導航欄 */
+    .navbar {
+        backdrop-filter: blur(10px);
+        background-color: rgba(33, 33, 33, 0.95) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .navbar-brand img {
+        transition: transform 0.3s ease;
+    }
+    
+    .navbar-brand:hover img {
+        transform: scale(1.05);
+    }
+    
+    /* 按鈕樣式 */
+    .btn {
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        /* text-transform: uppercase; */
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #64b5f6);
+        border: none;
+        box-shadow: 0 2px 5px rgba(33, 150, 243, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+    }
+    
+    .btn-close{
+        margin-top: 5px;
+        /* margin-right: 5px; */
+    }
+    
+    /* 卡片樣式 */
+    .card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    /* 表格優化 */
+    .table {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .table th {
+        /* background: rgba(33, 150, 243, 0.1); */
+        color: var(--primary-color);
+    }
+      
+    /* 動畫效果 */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .main-content {
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    /* 響應式調整 */
+    @media (max-width: 768px) {
+        .navbar {
+            padding: 0.5rem 1rem;
+        }
+        
+        .card {
+            margin-bottom: 1rem;
+        }
+    }
+    
+    /* 自定義滾動條 */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--gray-dark);
+        border-radius: 4px;
+    }
+</style>
+    
+<style>
+    /* 修正圖片與連結超出題目的bug */
+    p>a{
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    p>img{
+        max-width: 100%;
+    }
+</style>
+
+
+<div class="custom-homepage">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <img src="/files/thjcc_logo.svg" alt="THJCC Logo" class="hero-logo">
+        <!-- 預先顯示中文(THJCC CTF)，JS 載入後會依語言再次替換 -->
+        <h1 class="hero-title">THJCC CTF</h1>
+    </div>
+
+    <!-- Cards Section -->
+    <div class="card-container">
+        <!-- Competition Status Card -->
+        <div class="custom-card">
+            <h2 id="status-title">競賽狀態</h2>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-item-inner">
+                        <h3 id="start-time-label">開始時間</h3>
+                        <p id="start-time">2025/4/19 8:00 (UTC+8)</p>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-item-inner">
+                        <h3 id="end-time-label">結束時間</h3>
+                        <p id="end-time">2025/4/20 20:00 (UTC+8)</p>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-item-inner">
+                        <h3 id="status-field-label">目前狀態</h3>
+                        <p id="status-value">尚未開始</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competition Rules Card -->
+        <div class="custom-card">
+            <h2 id="rules-title">競賽規則</h2>
+            <ul id="rules-list" class="rules-list">
+                <li>請勿使用暴力破解或 DoS 等方式攻擊伺服器</li>
+                <li>競賽中禁止分享 Flag 或過程給其他參賽者</li>
+                <li>禁止破壞或嘗試破壞平台運作</li>
+                <li>如發現平台漏洞請立即回報給主辦方</li>
+                <li>違反規則的參賽者將被取消比賽資格</li>
+                <li>主辦方保留最終解釋權及處置權</li>
+            </ul>
+        </div>
+
+        <!-- 合作單位 (Partners) -->
+        <div class="custom-card">
+            <h2 id="partners-title">合作單位</h2>
+            <div class="partners-grid">
+                <div class="partner-item">
+                    <a href="https://scint.org">
+                        <img src="/files/scint_logo.svg" alt="SCINT">
+                    </a>
+                </div>
+                <div class="partner-item">
+                    <a href="https://scaict.org">
+                        <img src="/files/scaict_logo.svg" alt="SCAICT">
+                    </a>
+                </div>
+                <div class="partner-item">
+                    <a href="https://scist.org/">
+                        <img src="/files/scist_logo.svg" alt="SCIST">
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 贊助商 (Sponsors) -->
+        <div class="custom-card sponsors-card">
+            <h2 id="sponsors-title">贊助單位</h2>
+            <div class="sponsors-grid">
+                <div class="sponsor-item">
+                    <a href="https://hacker.org.tw">
+                        <img src="/files/hit_logo_black.png" alt="HIT">
+                    </a>
+                </div>
+                <div class="sponsor-item">
+                    <a href="https://cdx.nchc.org.tw">
+                        <img src="/files/cdx_logo.jpg" alt="CDX">
+                    </a>
+                </div>
+                <div class="sponsor-item">
+                    <a href="https://ncse.tw/">
+                        <img src="/files/ncse_logo.png" alt="NCSE">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
